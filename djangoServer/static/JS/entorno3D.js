@@ -35,6 +35,22 @@ const handleSend = (a) => {
 //######################################################################################################################
 //######################################################################################################################
 
+let keysPressed = {'x0': 0, 'y0': 5, 'z0': 0,'Vx':0,'Vy':0,'Vz':0,'E':0}
+document.addEventListener('keydown', (event) => {
+    keysPressed[event.key] = true;
+ 
+    // console.log(keysPressed)
+});
+ 
+document.addEventListener('keyup', (event) => {
+    keysPressed[event.key] = false;
+    // delete keysPressed[event.key];
+    // console.log(keysPressed)
+});
+
+//######################################################################################################################
+//######################################################################################################################
+
 // import * as THREE from '../../../../three_repository/build/three.module.js'
 
 // import { OrbitControls } from '../../../../three_repository/examples/jsm/controls/OrbitControls.js'
@@ -141,6 +157,29 @@ var animate = function(){
 
     // updateCamera();
     requestAnimationFrame(animate);
+
+    if (keysPressed['ArrowDown'] == true) {
+        // console.log('Esto funciona bien!');
+        cube.rotation.x += 0.05
+    }
+
+    if (keysPressed['ArrowRight'] == true) {
+        // console.log('Esto funciona bien!');
+        cube.rotation.z -= 0.05
+    }
+    if (keysPressed['ArrowLeft'] == true) {
+        // console.log('Esto funciona bien!');
+        cube.rotation.z += 0.05
+    }
+
+    if (keysPressed['ArrowUp'] == true) {
+        // console.log('Esto funciona bien!');
+        cube.rotation.x -= 0.05
+    }
+
+
+
+
     // camera.position.x += 0.005;
 
     // scene.traverse(function(object){
@@ -246,42 +285,32 @@ init();
 //#############################################################################################
 //####################################################################################################
 
-let keysPressed = {}
-document.addEventListener('keydown', (event) => {
-    keysPressed[event.key] = true;
- 
-    // console.log(keysPressed)
-});
- 
-document.addEventListener('keyup', (event) => {
-    delete keysPressed[event.key];
-    // console.log(keysPressed)
-});
 
-function movimiento(){
-    requestAnimationFrame(movimiento)
-    if (keysPressed['ArrowDown'] == true) {
-        // console.log('Esto funciona bien!');
-        cube.rotation.x += 0.05
-    }
 
-    if (keysPressed['ArrowRight'] == true) {
-        // console.log('Esto funciona bien!');
-        cube.rotation.z -= 0.05
-    }
-    if (keysPressed['ArrowLeft'] == true) {
-        // console.log('Esto funciona bien!');
-        cube.rotation.z += 0.05
-    }
+// function movimiento(){
+//     requestAnimationFrame(movimiento)
+//     if (keysPressed['ArrowDown'] == true) {
+//         // console.log('Esto funciona bien!');
+//         cube.rotation.x += 0.05
+//     }
 
-    if (keysPressed['ArrowUp'] == true) {
-        // console.log('Esto funciona bien!');
-        cube.rotation.x -= 0.05
-    }
-//    console.log(keysPressed)
-}
-// document.addEventListener('keydown',movimiento)
-movimiento();
+//     if (keysPressed['ArrowRight'] == true) {
+//         // console.log('Esto funciona bien!');
+//         cube.rotation.z -= 0.05
+//     }
+//     if (keysPressed['ArrowLeft'] == true) {
+//         // console.log('Esto funciona bien!');
+//         cube.rotation.z += 0.05
+//     }
+
+//     if (keysPressed['ArrowUp'] == true) {
+//         // console.log('Esto funciona bien!');
+//         cube.rotation.x -= 0.05
+//     }
+// //    console.log(keysPressed)
+// }
+// // document.addEventListener('keydown',movimiento)
+// movimiento();
 //####################################################################################################
 //####################################################################################################
 // document.addEventListener('keydown', (event) => {
@@ -297,10 +326,32 @@ movimiento();
 //####################################################################################################
 
 // PRUEBA CON PYTHON 
-document.addEventListener('keydown', () => {
+// document.addEventListener('keydown', () => {
     
-  Socket.send(JSON.stringify(keysPressed))
+//   Socket.send(JSON.stringify(keysPressed))
     
  
-});
+// });
+
+// setInterval(Socket.send(JSON.stringify(keysPressed)),100)
+
+function start() {
+    Socket.send(JSON.stringify(keysPressed));
+}
+
+document.addEventListener('click', () => {
+    setInterval(start,1000/60);
+  }, { once: true });
+//###################################################################################################
+//###################################################################################################
+
+// function rota(){
+//     console.log("Hola mundo");
+//     cube.rotation.x = parseInt(document.getElementById('alerta').value);
+// }
+
+// const boton = document.getElementById('button1');
+// boton.addEventListener('click',rota)
+//###################################################################################################
+
 
