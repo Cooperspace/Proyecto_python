@@ -33,6 +33,9 @@ class entornoConsumer(AsyncJsonWebsocketConsumer):
         """
         diccionario = json.loads(text_data)
         datos = Prueba(diccionario)
+        coordenadas = datos.data
+        print(coordenadas)
+        await self.send(text_data=json.dumps(coordenadas))
         #print(datos.diccionario)
         # datos.girar()
         # data = {'flecha_abajo':datos.ArrowDown}
@@ -43,7 +46,7 @@ class entornoConsumer(AsyncJsonWebsocketConsumer):
         # await self.send(text_data=json.dumps(
         #     {"respuesta":respuesta}
         # ))
-        return diccionario
+        
 
 
 # class operaciones:
@@ -129,6 +132,7 @@ class Prueba:
 
             })
             Nu = np.arctan(vz[0]/np.sqrt((vx[0]**2)+(vy[0]**2)))
+            self.data = data
 
         with open('data.json', 'w') as file:
             json.dump(data, file, indent=1)         
