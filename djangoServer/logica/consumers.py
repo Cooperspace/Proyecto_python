@@ -33,14 +33,17 @@ class entornoConsumer(AsyncJsonWebsocketConsumer):
         """
         diccionario = json.loads(text_data)
         datos = Prueba(diccionario)
-        #print(datos.diccionario)
+        coordenadas = datos.data
+        l=coordenadas[3]
+        r=l[0]
+        #print(r['x'])
         # datos.girar()
         # data = {'flecha_abajo':datos.ArrowDown}
         # print(data)
         # print("recibido", response)
         # respuesta = response["numero1"]+response["numero2"]
         # print("respuesta",respuesta)
-        # await self.send(text_data=json.dumps(
+        # await self.send(text_data=json.du3mps(
         #     {"respuesta":respuesta}
         # ))
         return diccionario
@@ -64,8 +67,8 @@ class Prueba:
 
         T= np.linspace(0,1,101) #se divide un segundo en 100 partes 
 
-
-        data = {}
+        data= {}
+        
         #Variables de posicion
         x=np.zeros(101)
         y=np.zeros(101)
@@ -82,7 +85,7 @@ class Prueba:
         vChi=np.zeros(101)
         ########################################
         #Valores iniciales de las variables recogidos en JS
-        x[0]= self.diccionario['x0']
+        x[0]= self.diccionario['E']
         y[0]= self.diccionario['y0']
         z[0]=0
         vx[0]=0
@@ -98,23 +101,20 @@ class Prueba:
 
         Nu = np.arctan(vz[0]/np.sqrt((vx[0]**2)+(vy[0]**2)))
         alpha=0
-
+        print(self.diccionario['E'])
 
 
         #iniciamos bucle temporal de un segundo
         for i in range (1,101):
 
-            x[i]= x[i-1] + 2
+            x[i]= x[i-1] 
             alpha= Theta[i-1]-Nu
-
-
-
-            data[i]= []
-
+            
+            data[i]=[]
             data[i].append({
             #posicion  
                 'x': x[i],
-                'y': y[0],
+                'y': y[i],
                 'z': x[i],
                 'vx': x[i],
                 'vy': x[i],
@@ -128,7 +128,14 @@ class Prueba:
                 'vChi': x[i]
 
             })
+
+
+            
+
+
             Nu = np.arctan(vz[0]/np.sqrt((vx[0]**2)+(vy[0]**2)))
+
+        self.data = data
 
         with open('data.json', 'w') as file:
             json.dump(data, file, indent=1)         
