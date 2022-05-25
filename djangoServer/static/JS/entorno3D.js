@@ -14,7 +14,8 @@ Socket.onopen =function(e){
     
 Socket.onmessage =function(e){
 let data = JSON.parse(e.data)
-console.log('Data:', data)
+// console.log(data)
+// console.log('Data:', data)
 // Socket.send(1)
 }
 
@@ -37,9 +38,12 @@ const handleSend = (a) => {
 
 let keysPressed = {'x0': 0, 'y0': 5, 'z0': 0,'Vx':0,'Vy':0,'Vz':0,'E':0}
 document.addEventListener('keydown', (event) => {
-    keysPressed[event.key] = true;
- 
-    // console.log(keysPressed)
+    if (event.key == 5) {
+        keysPressed['E'] = 5
+
+    
+    }
+    else {keysPressed[event.key] = true;}
 });
  
 document.addEventListener('keyup', (event) => {
@@ -47,6 +51,35 @@ document.addEventListener('keyup', (event) => {
     // delete keysPressed[event.key];
     // console.log(keysPressed)
 });
+
+//######################################################################################################################
+//######################################################################################################################
+// let Posiciones_2 = {}
+function start() {
+    let startTime = Date.now();
+    Socket.send(JSON.stringify(keysPressed));
+
+    Socket.addEventListener('message', (event) => {
+    
+            const POSICIONES = JSON.parse(event.data);
+           
+            let endTime = Date.now();
+            let timediff = endTime - startTime
+            // console.log(timediff)
+            keysPressed['x0']=  POSICIONES['3'][0]['x']
+            console.log(keysPressed['x0'])
+            console.log(POSICIONES)
+         });
+         
+
+}
+
+document.addEventListener('click', () => {
+    setInterval(start(),1000);
+  },);
+
+
+
 
 //######################################################################################################################
 //######################################################################################################################
@@ -157,25 +190,25 @@ var animate = function(){
 
     // updateCamera();
     requestAnimationFrame(animate);
+    cube.position.z =keysPressed['x0']
+    // if (keysPressed['ArrowDown'] == true) {
+    //     // console.log('Esto funciona bien!');
+    //     cube.rotation.x += 0.05
+    // }
 
-    if (keysPressed['ArrowDown'] == true) {
-        // console.log('Esto funciona bien!');
-        cube.rotation.x += 0.05
-    }
+    // if (keysPressed['ArrowRight'] == true) {
+    //     // console.log('Esto funciona bien!');
+    //     cube.rotation.z -= 0.05
+    // }
+    // if (keysPressed['ArrowLeft'] == true) {
+    //     // console.log('Esto funciona bien!');
+    //     cube.rotation.z += 0.05
+    // }
 
-    if (keysPressed['ArrowRight'] == true) {
-        // console.log('Esto funciona bien!');
-        cube.rotation.z -= 0.05
-    }
-    if (keysPressed['ArrowLeft'] == true) {
-        // console.log('Esto funciona bien!');
-        cube.rotation.z += 0.05
-    }
-
-    if (keysPressed['ArrowUp'] == true) {
-        // console.log('Esto funciona bien!');
-        cube.rotation.x -= 0.05
-    }
+    // if (keysPressed['ArrowUp'] == true) {
+    //     // console.log('Esto funciona bien!');
+    //     cube.rotation.x -= 0.05
+    // }
 
 
 
@@ -335,13 +368,24 @@ init();
 
 // setInterval(Socket.send(JSON.stringify(keysPressed)),100)
 
-function start() {
-    Socket.send(JSON.stringify(keysPressed));
-}
+// function start() {
+//     let startTime = Date.now();
+//     Socket.send(JSON.stringify(keysPressed));
 
-document.addEventListener('click', () => {
-    setInterval(start,1000/60);
-  }, { once: true });
+//     Socket.addEventListener('message', (event) => {
+    
+//             const MI_NUEVA_DATA = JSON.parse(event.data);
+//             let endTime = Date.now();
+//             let timediff = endTime - startTime
+//             console.log(timediff)
+            
+//          });
+
+// }
+
+// document.addEventListener('click', () => {
+//     setInterval(start(),3000);
+//   },);
 //###################################################################################################
 //###################################################################################################
 
