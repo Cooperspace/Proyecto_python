@@ -59,7 +59,7 @@ ROOT_URLCONF = 'djangoServer.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['D:/Java_Python/proyectoPython/Proyecto_python/djangoServer/templates'],
+        'DIRS': ['C:/Users/N6698/OneDrive/Escritorio/Proyecto PGAA/djangoServer/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

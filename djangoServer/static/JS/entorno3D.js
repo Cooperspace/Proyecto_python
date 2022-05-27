@@ -36,14 +36,41 @@ const handleSend = (a) => {
 //######################################################################################################################
 //######################################################################################################################
 
-let keysPressed = {'x0': 0, 'y0': 5, 'z0': 0,'Vx':0,'Vy':0,'Vz':0,'E':0}
+let keysPressed = {'x0': 0, 'y0': 0, 'z0': 0,'Vx':0,'Vy':0,'Vz':0,'E':0,'Theta':0,'Phi': 0}
 document.addEventListener('keydown', (event) => {
-    if (event.key == 5) {
-        keysPressed['E'] = 5
+    keysPressed[event.key] = true;
+ 
 
-    
-    }
-    else {keysPressed[event.key] = true;}
+    if (event.key == 1)
+keysPressed['E']= 1
+
+else if (event.key == 2)
+keysPressed['E']=2
+
+else if (event.key == 3)
+keysPressed['E']=3
+
+else if (event.key == 4)
+keysPressed['E']=4
+
+else if (event.key == 5)
+keysPressed['E']=5
+
+else if (event.key == 6)
+keysPressed['E']=6
+
+else if (event.key == 7)
+keysPressed['E']=7
+
+else if (event.key == 8)
+keysPressed['E']=8
+
+else if (event.key == 9)
+keysPressed['E']=9
+
+else 
+keysPressed['E']=0
+//keysPressed[event.key] = true;
 });
  
 document.addEventListener('keyup', (event) => {
@@ -67,15 +94,22 @@ function start() {
             let timediff = endTime - startTime
             // console.log(timediff)
             keysPressed['x0']=  POSICIONES['3'][0]['x']
-            console.log(keysPressed['x0'])
-            console.log(POSICIONES)
+            keysPressed['y0']=  POSICIONES['3'][0]['y']
+            keysPressed['z0']=  POSICIONES['3'][0]['z']
+            
+            keysPressed['Vx']=  POSICIONES['3'][0]['vx']
+            keysPressed['Vy']=  POSICIONES['3'][0]['vy']
+            keysPressed['Vz']=  POSICIONES['3'][0]['vz']
+            
+            //console.log(keysPressed['x0'])
+            //console.log(POSICIONES)
          });
          
 
 }
 
 document.addEventListener('click', () => {
-    setInterval(start(),1000);
+    setInterval(start,30);
   },);
 
 
@@ -145,12 +179,12 @@ scene.add( directionalLight );
 
 // ground
 
-const ground = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: 0x445544, depthWrite: false } ) );
+const ground = new THREE.Mesh( new THREE.PlaneGeometry( 20000, 20000 ), new THREE.MeshPhongMaterial( { color: 0x445544, depthWrite: false } ) );
 ground.rotation.x = - Math.PI / 2;
 ground.receiveShadow = true;
 scene.add( ground );
 
-const grid = new THREE.GridHelper( 2000, 20, 0x998652, 0x998652 );
+const grid = new THREE.GridHelper( 20000, 2000, 0x998652, 0x998652 );
 grid.material.opacity = 0.5;
 grid.material.transparent = true;
 scene.add( grid );
@@ -190,26 +224,34 @@ var animate = function(){
 
     // updateCamera();
     requestAnimationFrame(animate);
-    cube.position.z =keysPressed['x0']
-    // if (keysPressed['ArrowDown'] == true) {
+    cube.position.x =keysPressed['x0']
+    cube.position.y =keysPressed['y0']
+    cube.position.z =keysPressed['z0']
+    camera.position.x= cube.position.x -15
+    camera.position.y= cube.position.y +2
+    camera.position.z= cube.position.z
+    
+    //camera.position.z =keysPressed['x0']
+    if (keysPressed['ArrowDown'] == true) {
     //     // console.log('Esto funciona bien!');
-    //     cube.rotation.x += 0.05
-    // }
+        cube.rotation.z += 0.01
+     }
 
-    // if (keysPressed['ArrowRight'] == true) {
+    if (keysPressed['ArrowRight'] == true) {
     //     // console.log('Esto funciona bien!');
-    //     cube.rotation.z -= 0.05
-    // }
-    // if (keysPressed['ArrowLeft'] == true) {
+        cube.rotation.x -= 0.03
+    }
+    if (keysPressed['ArrowLeft'] == true) {
     //     // console.log('Esto funciona bien!');
-    //     cube.rotation.z += 0.05
-    // }
+        cube.rotation.x += 0.03
+    }
 
-    // if (keysPressed['ArrowUp'] == true) {
+    if (keysPressed['ArrowUp'] == true) {
     //     // console.log('Esto funciona bien!');
-    //     cube.rotation.x -= 0.05
-    // }
-
+        cube.rotation.z -= 0.01
+    }
+    keysPressed['Theta']=  cube.rotation.z
+    keysPressed['Phi']=  cube.rotation.x
 
 
 
@@ -225,7 +267,7 @@ var animate = function(){
         
     // });
     
-    // camera.lookAt (new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
+    camera.lookAt (new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
     // cube.rotation.x += 0.02;
     // cube.rotation.y -= 0.01;
 

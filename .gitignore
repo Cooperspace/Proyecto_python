@@ -151,3 +151,4 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 djangoServer/static/JS/entorno3D.js
+djangoServer/djangoServer/settings.py
