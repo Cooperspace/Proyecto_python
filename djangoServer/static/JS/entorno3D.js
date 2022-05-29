@@ -36,14 +36,48 @@ const handleSend = (a) => {
 //######################################################################################################################
 //######################################################################################################################
 
-let keysPressed = {'x0': 0, 'y0': 5, 'z0': 0,'Vx':0,'Vy':0,'Vz':0,'E':0}
+let keysPressed = {'x0': 0, 'y0': 0, 'z0': 0,'Vx':0,'Vy':0,'Vz':0,'E':0,'Theta':0,'Phi':0}
 document.addEventListener('keydown', (event) => {
-    if (event.key == 5) {
-        keysPressed['E'] = 5
+    keysPressed[event.key] = true;
+    if (event.key == 1) {
+        keysPressed['E'] = 1
+
+    }
+    else if (event.key == 2){
+        keysPressed['E'] = 2
 
     
     }
-    else {keysPressed[event.key] = true;}
+    else if (event.key == 3){
+        keysPressed['E'] = 3
+
+    
+    }else if (event.key == 4){
+        keysPressed['E'] = 4
+
+    
+    }else if (event.key == 5){
+        keysPressed['E'] = 5
+
+    
+    }else if (event.key == 6){
+        keysPressed['E'] = 6
+
+    
+    }else if (event.key == 7){
+        keysPressed['E'] = 7
+
+    
+    }else if (event.key == 8){
+        keysPressed['E'] = 8
+
+    
+    }
+    else if (event.key == 9){
+        keysPressed['E'] = 9
+
+    
+    }
 });
  
 document.addEventListener('keyup', (event) => {
@@ -56,26 +90,34 @@ document.addEventListener('keyup', (event) => {
 //######################################################################################################################
 // let Posiciones_2 = {}
 function start() {
-    let startTime = Date.now();
+    // let startTime = [];
+    // startTime[0] = Date.now();
+    // console.time('t1')
     Socket.send(JSON.stringify(keysPressed));
 
     Socket.addEventListener('message', (event) => {
     
             const POSICIONES = JSON.parse(event.data);
-           
-            let endTime = Date.now();
-            let timediff = endTime - startTime
-            // console.log(timediff)
+        //    console.timeEnd('t1')
+        //    console.log('t1')
+            // let endTime = [];
+            // endTime[0] = Date.now();
+            // let timediff = [];
+            // timediff[0] = endTime[0] - startTime[0]
+            // console.log(startTime[0])
             keysPressed['x0']=  POSICIONES['3'][0]['x']
-            console.log(keysPressed['x0'])
-            console.log(POSICIONES)
+            keysPressed['y0']=  POSICIONES['3'][0]['y']
+            keysPressed['Vx']= POSICIONES['3'][0]['vx']
+            keysPressed['Vy']= POSICIONES['3'][0]['vy']
+            // console.log(keysPressed['x0'])
+            // console.log(POSICIONES)
          });
          
 
 }
 
 document.addEventListener('click', () => {
-    setInterval(start(),1000);
+    setInterval(start,1000/30);
   },);
 
 
@@ -90,6 +132,9 @@ document.addEventListener('click', () => {
 
 import * as THREE from './three.module.js'
 import { OrbitControls } from './OrbitControls.js'
+import {TreesGeometry, SkyGeometry} from './RollerCoaster.js'
+import { GLTFLoader } from './GLTFLoader.js';
+
 
 // // let mouse = new THREE.Vector2();
 
@@ -104,13 +149,15 @@ var camera = new THREE.PerspectiveCamera(
 
 
 //Añadir geometria
-var geometry = new THREE.BoxGeometry(2,2,2,2,2,2);
-var material = new THREE.MeshBasicMaterial({color:`rgb(${0},${125},${200})`, wireframe: true });
-var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
-cube.position.x = 0;
-cube.position.z = 0;
-cube.position.y = 3;
+let geometry
+let material
+// var geometry = new THREE.BoxGeometry(2,2,2,2,2,2);
+// var material = new THREE.MeshBasicMaterial({color:`rgb(${0},${125},${200})`, wireframe: true });
+// var cube = new THREE.Mesh(geometry, material);
+// scene.add(cube);
+// cube.position.x = 0;
+// cube.position.z = 0;
+// cube.position.y = 3;
 camera.position.z = 15;
 camera.position.y = 5;
 camera.position.x = -2;
@@ -123,10 +170,21 @@ camera.position.x = -2;
 // scene.add(circle);
 // circle.position.x = 8; 
 // circle.position.y = 5;
-
-
-
-
+//////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+let avion
+let loader = new GLTFLoader();
+loader.setPath('../static/JS/german_ww2_aircraft_messerschmitt_109/')
+loader.load('scene.gltf',function(gltf){
+    gltf.scene.scale.multiplyScalar(1 / 60); // adjust scalar factor to match your scene scale
+    gltf.scene.rotation.y = 3.14;
+    gltf.scene.position.y = 1;
+    avion = gltf.scene;
+    scene.add(avion)
+});
+// camera.lookAt (new THREE.Vector3(avion.position.x,avion.position.y,avion.position.z));
+// //////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 //Light
 
 const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444 );
@@ -145,18 +203,85 @@ scene.add( directionalLight );
 
 // ground
 
-const ground = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: 0x445544, depthWrite: false } ) );
-ground.rotation.x = - Math.PI / 2;
-ground.receiveShadow = true;
-scene.add( ground );
+// const ground = new THREE.Mesh( new THREE.PlaneGeometry( 20000, 20000 ), new THREE.MeshPhongMaterial( { color: 0x445544, depthWrite: false } ) );
+// ground.rotation.x = - Math.PI / 2;
+// ground.receiveShadow = true;
+// scene.add( ground );
 
-const grid = new THREE.GridHelper( 2000, 20, 0x998652, 0x998652 );
-grid.material.opacity = 0.5;
-grid.material.transparent = true;
-scene.add( grid );
+// const grid = new THREE.GridHelper( 20000, 2000, 0x998652, 0x998652 );
+// grid.material.opacity = 0.5;
+// grid.material.transparent = true;
+// scene.add( grid );
+////////////////////////////////////////////////////////////////////////////
+// const GroundGeo = new THREE.PlaneGeometry(10000,10000,300,200);
+// let disMap = new THREE.TextureLoader()
+//     .setPath('../static/IMAGES/')
+//     .load('Terrain-Heightmap.png')
+     
+//     disMap.wrapS = disMap.wrapT = THREE.RepeatWrapping;
+//     disMap.repeat.set(1,1)
 
+// const groundMat = new THREE.MeshStandardMaterial({
+//     color:0x445544,
+//     wireframe: true,
+//     displacementMap: disMap,
+//     displacementScale: 330,
+// })
 
+// const groundMesh = new THREE.Mesh(GroundGeo,groundMat);
+// scene.add(groundMesh);
+// groundMesh.rotation.x = Math.PI/2;
+// groundMesh.position.y = -1;
+// groundMesh.receiveShadow = true;
+// groundMesh.color = 0xff0000;
+///////////////////////////////////////////////////////////////////////////
 
+// environment
+
+geometry = new THREE.PlaneGeometry( 500, 500, 10, 10 );
+geometry.rotateX( - Math.PI / 2 );
+
+const positions = geometry.attributes.position.array;
+const vertex = new THREE.Vector3();
+
+for ( let i = 0; i < positions.length; i += 6 ) {
+
+    vertex.fromArray( positions, i );
+
+    vertex.x += Math.random() * 10 - 5;
+    vertex.z += Math.random() * 10 - 5;
+
+    const distance = ( vertex.distanceTo( scene.position ) / 5 ) - 25;
+    vertex.y = Math.random() * Math.max( 0, distance );
+
+    vertex.toArray( positions, i );
+
+}
+
+geometry.computeVertexNormals();
+
+material = new THREE.MeshLambertMaterial( {
+    color: 0x407000
+} );
+
+const mesh = new THREE.Mesh( geometry, material );
+scene.add( mesh );
+mesh.position.y = -0.5;
+
+geometry = new TreesGeometry( mesh );
+material = new THREE.MeshBasicMaterial( {
+    side: THREE.DoubleSide, vertexColors: true
+} );
+const mesh2 = new THREE.Mesh( geometry, material );
+scene.add( mesh2 );
+mesh2.position.y = -0.5;
+
+geometry = new SkyGeometry();
+material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+const mesh3 = new THREE.Mesh( geometry, material );
+scene.add( mesh3 );
+mesh3.position.y = -0.5;
+//
 
 
 //Agregar el renderer
@@ -169,8 +294,8 @@ document.body.appendChild(renderer.domElement);
 // 
 var controls = new OrbitControls(camera,renderer.domElement);
 
-controls.minDistance = 5; // acercar zoom
-controls.maxDistance = 20; // alejar zoom 
+// controls.minDistance = 5; // acercar zoom
+// controls.maxDistance = 20; // alejar zoom 
 
 // controls.enableZoom = false; // quitar el zoom, por defecto esta en true
 
@@ -186,31 +311,36 @@ controls.screenSpacePanning = true; // poder mover la panoramica de la imagen en
 // ANIMACION
 
 var animate = function(){
-    
+
 
     // updateCamera();
     requestAnimationFrame(animate);
-    cube.position.z =keysPressed['x0']
-    // if (keysPressed['ArrowDown'] == true) {
-    //     // console.log('Esto funciona bien!');
-    //     cube.rotation.x += 0.05
-    // }
+    avion.position.z =-keysPressed['x0']
+    avion.position.y = keysPressed['y0']
 
-    // if (keysPressed['ArrowRight'] == true) {
-    //     // console.log('Esto funciona bien!');
-    //     cube.rotation.z -= 0.05
-    // }
-    // if (keysPressed['ArrowLeft'] == true) {
-    //     // console.log('Esto funciona bien!');
-    //     cube.rotation.z += 0.05
-    // }
+    // camera.position.z = cube.position.z + 15;
+    // camera.position.y = cube.position.y + 2;
+    // camera.position.x = cube.position.x;
+    if (keysPressed['ArrowDown'] == true) {
+        // console.log('Esto funciona bien!');
+        avion.rotation.x += 0.05
+    }
 
-    // if (keysPressed['ArrowUp'] == true) {
-    //     // console.log('Esto funciona bien!');
-    //     cube.rotation.x -= 0.05
-    // }
+    if (keysPressed['ArrowRight'] == true) {
+        // console.log('Esto funciona bien!');
+        avion.rotation.z -= 0.05
+    }
+    if (keysPressed['ArrowLeft'] == true) {
+        // console.log('Esto funciona bien!');
+        avion.rotation.z += 0.05
+    }
 
+    if (keysPressed['ArrowUp'] == true) {
+        // console.log('Esto funciona bien!');
+        avion.rotation.x -= 0.05
+    }
 
+    keysPressed['Theta']=avion.rotation.x
 
 
     // camera.position.x += 0.005;

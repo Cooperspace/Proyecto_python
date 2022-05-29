@@ -1,4 +1,5 @@
 import json
+from flask import g
 import numpy as np
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
@@ -37,7 +38,7 @@ class entornoConsumer(AsyncJsonWebsocketConsumer):
         l=coordenadas[3]
         r=l[0]
         
-        print(r['x'])
+        # print(r['x'])
 
         
         await self.send(text_data=json.dumps(coordenadas))
@@ -95,12 +96,12 @@ class Prueba:
         x[0]= self.diccionario['x0']
         y[0]= self.diccionario['y0']
         z[0]=0
-        vx[0]=0
-        vy[0]=0
-        vz[0]=0
+        vx[0]=self.diccionario['Vx']
+        vy[0]=self.diccionario['Vy']
+        vz[0]=0.001
         V0[0]=np.sqrt((vx[0]**2)+(vy[0]**2)+(vz[0]**2))
         #Variables angulares en  radianes
-        Theta[0]=0
+        Theta[0]=self.diccionario['Theta']
         Phi[0]=0
         Chi[0]=0
         vTheta[0]=0
@@ -110,32 +111,58 @@ class Prueba:
 
         #Parametros
         M=1100 #kg
+        g = 9.81
         Sw= 20 #m2
         Rho= 1.225 #densidad kg/m3
         Cd= 0.0035
+        Cl = 0.5
         E= self.diccionario['E']*(7000/9)
-        Nu = np.arctan(vz[0]/np.sqrt((vx[0]**2)+(vy[0]**2)))
-        alpha=0
-        print(self.diccionario['E'])
+        # Nu = np.arctan(vz[0]/np.sqrt((vx[0]**2)+(vy[0]**2)))
+        # alpha=0
+        # print(self.diccionario['E'])
 
 
         #iniciamos bucle temporal de un segundo
-        for i in range (1,101):
+        for i in range (1,31):
+
+            Nu = np.arctan(vy[i-1]/np.sqrt((vx[i-1]**2)+(vz[i-1]**2)))
+            alpha = Theta[0] - Nu
             #moviento en x
             D=0.5*Sw*Rho*Cd*(V0[i-1]**2)
-            ax= (E/M)-(D/M)
+            L=0.5*Sw*Rho*Cl*(V0[i-1]**2)
+            ############# FUERZAS EN X
+            Fx = np.cos(Theta[0])*(E+(L*np.sin(alpha))-(D*np.cos(alpha))) - np.sin(Theta[0])*(L*np.cos(alpha)+(D*np.cos(alpha)))
+            
+            ############# FUERZAS EN Y
+            Fy = np.sin(Theta[0])*(E+(L*np.sin(alpha))-(D*np.cos(alpha))) + np.cos(Theta[0])*(L*np.cos(alpha)+(D*np.cos(alpha)))
+            ############# POSICION EN X
+            ax= Fx/M
             vx[i]=vx[i-1]+ax*DT
             x[i]= x[i-1]+ (vx[i]*DT) + (0.5*ax*(DT**2))
+            ############## POSICION EN Y 
+            ay = (Fy/M)-g
+            if y[i-1]==0 and ay <=0:
+                ay=0
+            else:
+                ay = ay
+            
+            vy[i]=vy[i-1]+ay*DT
+            y[i]= y[i-1]+ (vy[i]*DT) + (0.5*ay*(DT**2))
+
+
+
+
+
             #alpha= Theta[i-1]-Nu
             V0[i]=np.sqrt((vx[i]**2)+(vy[i]**2)+(vz[i]**2))
             data[i]=[]
             data[i].append({
             #posicion  
                 'x': x[i],
-                # 'y': y[i],
+                'y': y[i],
                 # 'z': x[i],
                 'vx': vx[i],
-                # 'vy': x[i],
+                'vy': vy[i],
                 # 'vz': x[i],
             #angulos
                 # 'Theta': x[i],
@@ -152,7 +179,7 @@ class Prueba:
             
 
 
-            Nu = np.arctan(vz[0]/np.sqrt((vx[0]**2)+(vy[0]**2)))
+           
             self.data = data
 
         self.data = data
