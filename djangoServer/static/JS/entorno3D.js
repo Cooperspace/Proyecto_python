@@ -107,6 +107,8 @@ function start() {
             // console.log(startTime[0])
             keysPressed['x0']=  POSICIONES['3'][0]['x']
             keysPressed['y0']=  POSICIONES['3'][0]['y']
+            keysPressed['z0']=  POSICIONES['3'][0]['z']
+            
             keysPressed['Vx']= POSICIONES['3'][0]['vx']
             keysPressed['Vy']= POSICIONES['3'][0]['vy']
             keysPressed['Vz']= POSICIONES['3'][0]['vz']
