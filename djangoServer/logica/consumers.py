@@ -1,5 +1,4 @@
 import json
-from flask import g
 import numpy as np
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
@@ -38,7 +37,7 @@ class entornoConsumer(AsyncJsonWebsocketConsumer):
         l=coordenadas[3]
         r=l[0]
         
-        # print(r['x'])
+        #print(diccionario)
 
         
         await self.send(text_data=json.dumps(coordenadas))
@@ -84,8 +83,8 @@ class Prueba:
         vy=np.zeros(101)
         vz=np.zeros(101)
         #Variables angulares en radianes
-        Theta=np.zeros(101)
-        Phi=np.zeros(101)
+        Th=np.zeros(101)
+        Ph=np.zeros(101)
         Chi=np.zeros(101)
         vTheta=np.zeros(101)
         vPhi=np.zeros(101)
@@ -95,75 +94,90 @@ class Prueba:
         #Valores iniciales de las variables recogidos en JS
         x[0]= self.diccionario['x0']
         y[0]= self.diccionario['y0']
-        z[0]=0
+        z[0]= self.diccionario['z0']
+
         vx[0]=self.diccionario['Vx']
         vy[0]=self.diccionario['Vy']
-        vz[0]=0.001
+        vz[0]=self.diccionario['Vz']+0.00001
         V0[0]=np.sqrt((vx[0]**2)+(vy[0]**2)+(vz[0]**2))
         #Variables angulares en  radianes
-        Theta[0]=self.diccionario['Theta']
-        Phi[0]=0
+        Th[0]=self.diccionario['Theta']
+        Ph[0]=self.diccionario['Phi']
         Chi[0]=0
         vTheta[0]=0
         vPhi[0]=0
         vChi[0]=0
+        
         #######################################################################################################
 
         #Parametros
+        g= 9.81 #gravedad
         M=1100 #kg
-        g = 9.81
         Sw= 20 #m2
         Rho= 1.225 #densidad kg/m3
-        Cd= 0.0035
-        Cl = 0.5
-        E= self.diccionario['E']*(7000/9)
-        # Nu = np.arctan(vz[0]/np.sqrt((vx[0]**2)+(vy[0]**2)))
-        # alpha=0
-        # print(self.diccionario['E'])
+        Cd= 0.035
+        Cl= 0.59
+        E= self.diccionario['E']*(3000/9)
+    
+        
+        #print(self.diccionario['E'])
 
 
         #iniciamos bucle temporal de un segundo
-        for i in range (1,31):
-
+        for i in range (1,11):
+            c=np.cos(Th[0])
+            #print(c)
             Nu = np.arctan(vy[i-1]/np.sqrt((vx[i-1]**2)+(vz[i-1]**2)))
-            alpha = Theta[0] - Nu
+            Theta= Th[0]
+            Phi= Ph[0]
+            alpha= Theta-Nu
             #moviento en x
             D=0.5*Sw*Rho*Cd*(V0[i-1]**2)
             L=0.5*Sw*Rho*Cl*(V0[i-1]**2)
-            ############# FUERZAS EN X
-            Fx = np.cos(Theta[0])*(E+(L*np.sin(alpha))-(D*np.cos(alpha))) - np.sin(Theta[0])*(L*np.cos(alpha)+(D*np.cos(alpha)))
-            
-            ############# FUERZAS EN Y
-            Fy = np.sin(Theta[0])*(E+(L*np.sin(alpha))-(D*np.cos(alpha))) + np.cos(Theta[0])*(L*np.cos(alpha)+(D*np.cos(alpha)))
-            ############# POSICION EN X
+
+            ###### Fuerza x
+            Fx= np.cos(Theta)*(E+(L*np.cos(Phi)*np.sin(alpha)-(D*np.cos(alpha)))) - np.sin(Theta)*(L*np.cos(Phi)*np.cos(alpha)+D*np.cos(alpha))
+            ###### Fuerza en y
+            Fy= np.sin(Theta)*(E+(L*np.cos(Phi)*np.sin(alpha)-(D*np.cos(alpha)))) + np.cos(Theta)*(L*np.cos(Phi)*np.cos(alpha)+D*np.cos(alpha))
+            ###### Fuerza en z
+            Fz= L*np.sin(Phi)
+            ###### posicion en x
+
+            #print(Fy)
             ax= Fx/M
             vx[i]=vx[i-1]+ax*DT
-            x[i]= x[i-1]+ (vx[i]*DT) + (0.5*ax*(DT**2))
-            ############## POSICION EN Y 
-            ay = (Fy/M)-g
-            if y[i-1]==0 and ay <=0:
+            x[i]= x[i-1]+ (vx[i-1]*DT) + (0.5*ax*(DT**2))
+
+            ##### posicion en y 
+            ay= (Fy/M)-g
+            if y[i-1]==0 and ay<=0:
                 ay=0
-            else:
-                ay = ay
-            
+            else :
+                ay=ay
+
             vy[i]=vy[i-1]+ay*DT
-            y[i]= y[i-1]+ (vy[i]*DT) + (0.5*ay*(DT**2))
+            y[i]= y[i-1]+ (vy[i-i]*DT) + (0.5*ay*(DT**2))
 
-
-
+            ###### Posicion en z
+            az=Fz/M
+            vz[i]=vz[i-1]+az*DT
+            z[i]= z[i-1]+ (vz[i-i]*DT) + (0.5*az*(DT**2))
 
 
             #alpha= Theta[i-1]-Nu
-            V0[i]=np.sqrt((vx[i]**2)+(vy[i]**2)+(vz[i]**2))
+            V0[i]=np.sqrt((vx[i-1]**2)+(vy[i]**2)+(vz[i]**2))
             data[i]=[]
             data[i].append({
             #posicion  
                 'x': x[i],
                 'y': y[i],
-                # 'z': x[i],
+                'z': z[i],
                 'vx': vx[i],
+
                 'vy': vy[i],
-                # 'vz': x[i],
+                'Theta': Th[0],
+                'Phi': Ph[0],
+                'vz': vz[i],
             #angulos
                 # 'Theta': x[i],
                 # 'Phi': x[i],
@@ -176,16 +190,15 @@ class Prueba:
             })
 
 
+        
+
+
             
-
-
-           
             self.data = data
 
         self.data = data
-
+        #print(Fz)
         with open('data.json', 'w') as file:
             json.dump(data, file, indent=1)         
         
-
 
