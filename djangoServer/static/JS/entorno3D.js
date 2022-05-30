@@ -398,7 +398,7 @@ function onWindowResize() {  // Esta funcion redimensiona la camara cuanfdo se m
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-animate();
+setTimeout(animate,500);
 init();
 // ####################################################################################################
 // ####################################################################################################
