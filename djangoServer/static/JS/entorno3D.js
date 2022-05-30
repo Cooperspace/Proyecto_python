@@ -109,6 +109,7 @@ function start() {
             keysPressed['y0']=  POSICIONES['3'][0]['y']
             keysPressed['Vx']= POSICIONES['3'][0]['vx']
             keysPressed['Vy']= POSICIONES['3'][0]['vy']
+            keysPressed['Vz']= POSICIONES['3'][0]['vz']
             // console.log(keysPressed['x0'])
             // console.log(POSICIONES)
          });
@@ -317,6 +318,10 @@ var animate = function(){
     requestAnimationFrame(animate);
     avion.position.z =-keysPressed['x0']
     avion.position.y = keysPressed['y0']
+    avion.position.z = keysPressed['z0']
+    camera.position.x= avion.position.x -15
+    camera.position.y= avion.position.y +2
+    camera.position.z= avion.position.z
 
     // camera.position.z = cube.position.z + 15;
     // camera.position.y = cube.position.y + 2;
