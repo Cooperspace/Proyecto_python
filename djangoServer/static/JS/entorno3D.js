@@ -36,7 +36,7 @@ const handleSend = (a) => {
 //######################################################################################################################
 //######################################################################################################################
 
-let keysPressed = {'x0': 0, 'y0': 0, 'z0': 0,'Vx':0,'Vy':0,'Vz':0,'E':0,'Theta':0,'Phi':0}
+let keysPressed = {'x0': 0, 'y0': 0, 'z0': 0,'Vx':0,'Vy':0,'Vz':0,'E':0,'Theta':0,'Phi':0,'Chi': 0}
 document.addEventListener('keydown', (event) => {
     keysPressed[event.key] = true;
     if (event.key == 1) {
@@ -207,15 +207,15 @@ scene.add( directionalLight );
 
 // ground
 
-// const ground = new THREE.Mesh( new THREE.PlaneGeometry( 20000, 20000 ), new THREE.MeshPhongMaterial( { color: 0x445544, depthWrite: false } ) );
-// ground.rotation.x = - Math.PI / 2;
-// ground.receiveShadow = true;
-// scene.add( ground );
+const ground = new THREE.Mesh( new THREE.PlaneGeometry( 20000, 20000 ), new THREE.MeshPhongMaterial( { color: 0x445544, depthWrite: false } ) );
+ground.rotation.x = - Math.PI / 2;
+ground.receiveShadow = true;
+scene.add( ground );
 
-// const grid = new THREE.GridHelper( 20000, 2000, 0x998652, 0x998652 );
-// grid.material.opacity = 0.5;
-// grid.material.transparent = true;
-// scene.add( grid );
+const grid = new THREE.GridHelper( 20000, 2000, 0x998652, 0x998652 );
+grid.material.opacity = 0.5;
+grid.material.transparent = true;
+scene.add( grid );
 ////////////////////////////////////////////////////////////////////////////
 // const GroundGeo = new THREE.PlaneGeometry(10000,10000,300,200);
 // let disMap = new THREE.TextureLoader()
@@ -242,49 +242,49 @@ scene.add( directionalLight );
 
 // environment
 
-geometry = new THREE.PlaneGeometry( 2000, 2000, 10, 10 );
-geometry.rotateX( - Math.PI / 2 );
+// geometry = new THREE.PlaneGeometry( 2000, 2000, 10, 10 );
+// geometry.rotateX( - Math.PI / 2 );
 
-const positions = geometry.attributes.position.array;
-const vertex = new THREE.Vector3();
+// const positions = geometry.attributes.position.array;
+// const vertex = new THREE.Vector3();
 
-for ( let i = 0; i < positions.length; i += 6 ) {
+// for ( let i = 0; i < positions.length; i += 6 ) {
 
-    vertex.fromArray( positions, i );
+//     vertex.fromArray( positions, i );
 
-    vertex.x += Math.random() * 10 - 5;
-    vertex.z += Math.random() * 10 - 5;
+//     vertex.x += Math.random() * 10 - 5;
+//     vertex.z += Math.random() * 10 - 5;
 
-    const distance = ( vertex.distanceTo( scene.position ) / 5 ) - 25;
-    vertex.y = Math.random() * Math.max( 0, distance );
+//     const distance = ( vertex.distanceTo( scene.position ) / 5 ) - 25;
+//     vertex.y = Math.random() * Math.max( 0, distance );
 
-    vertex.toArray( positions, i );
+//     vertex.toArray( positions, i );
 
-}
+// }
 
-geometry.computeVertexNormals();
+// geometry.computeVertexNormals();
 
-material = new THREE.MeshLambertMaterial( {
-    color: 0x407000
-} );
+// material = new THREE.MeshLambertMaterial( {
+//     color: 0x407000
+// } );
 
-const mesh = new THREE.Mesh( geometry, material );
-scene.add( mesh );
-mesh.position.y = -0.5;
+// const mesh = new THREE.Mesh( geometry, material );
+// scene.add( mesh );
+// mesh.position.y = -0.5;
 
-geometry = new TreesGeometry( mesh );
-material = new THREE.MeshBasicMaterial( {
-    side: THREE.DoubleSide, vertexColors: true
-} );
-const mesh2 = new THREE.Mesh( geometry, material );
-scene.add( mesh2 );
-mesh2.position.y = -0.5;
+// geometry = new TreesGeometry( mesh );
+// material = new THREE.MeshBasicMaterial( {
+//     side: THREE.DoubleSide, vertexColors: true
+// } );
+// const mesh2 = new THREE.Mesh( geometry, material );
+// scene.add( mesh2 );
+// mesh2.position.y = -0.5;
 
-geometry = new SkyGeometry();
-material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
-const mesh3 = new THREE.Mesh( geometry, material );
-scene.add( mesh3 );
-mesh3.position.y = -0.5;
+// geometry = new SkyGeometry();
+// material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+// const mesh3 = new THREE.Mesh( geometry, material );
+// scene.add( mesh3 );
+// mesh3.position.y = -0.5;
 //
 
 
@@ -322,38 +322,44 @@ var animate = function(){
     avion.position.x = keysPressed['x0']
     avion.position.y = keysPressed['y0']
     avion.position.z = keysPressed['z0']
-    camera.position.x= avion.position.x - (15*keysPressed['Vx'])/(((keysPressed['Vx']**2) +(keysPressed['Vy']**2)+keysPressed['Vz']**2)**(0.5))
-    camera.position.y= avion.position.y - (0*keysPressed['Vy'])/(((keysPressed['Vx']**2) +(keysPressed['Vy']**2)+keysPressed['Vz']**2)**(0.5)) +5
-    camera.position.z= avion.position.z - (15*keysPressed['Vz'])/(((keysPressed['Vx']**2) +(keysPressed['Vy']**2)+keysPressed['Vz']**2)**(0.5))
+    // camera.position.x= avion.position.x - (15*keysPressed['Vx'])/(((keysPressed['Vx']**2) +(keysPressed['Vy']**2)+keysPressed['Vz']**2)**(0.5))
+    // camera.position.y= avion.position.y - (0*keysPressed['Vy'])/(((keysPressed['Vx']**2) +(keysPressed['Vy']**2)+keysPressed['Vz']**2)**(0.5)) +5
+    // camera.position.z= avion.position.z - (15*keysPressed['Vz'])/(((keysPressed['Vx']**2) +(keysPressed['Vy']**2)+keysPressed['Vz']**2)**(0.5))
 
     // camera.position.z = cube.position.z + 15;
     // camera.position.y = cube.position.y + 2;
     // camera.position.x = cube.position.x;
     if (keysPressed['ArrowDown'] == true) {
         // console.log('Esto funciona bien!');
-        avion.rotateX(-0.02)
-        keysPressed['Theta']-=0.02    
+        avion.rotateX(-0.005)
+        keysPressed['Theta']-=0.005    
     }
 
     if (keysPressed['ArrowRight'] == true) {
         // console.log('Esto funciona bien!');
-        avion.rotateZ(0.02)
-        keysPressed['Phi']+=0.02
+        avion.rotateZ(0.005)
+        avion.rotateY(-0.005)
+        keysPressed['Phi']+=0.005
+        keysPressed['Chi']-=0.005
         
     }
     if (keysPressed['ArrowLeft'] == true) {
         // console.log('Esto funciona bien!');
-        avion.rotateZ(-0.02)
-        keysPressed['Phi']-=0.02
+        avion.rotateZ(-0.005)
+        avion.rotateY(0.005)
+        keysPressed['Phi']-=0.005
+        keysPressed['Chi']+=0.005
     }
 
     if (keysPressed['ArrowUp'] == true) {
         // console.log('Esto funciona bien!');
-        avion.rotateX(0.02)
-        keysPressed['Theta']+=0.02
+        avion.rotateX(0.005)
+        keysPressed['Theta']+=0.005
     }
 
-    
+    camera.position.x= avion.position.x - 10*( Math.cos(keysPressed['Chi'])*Math.cos(keysPressed['Theta']) + Math.sin(keysPressed['Chi'])*Math.sin(keysPressed['Phi'])*Math.sin(keysPressed['Theta']))
+    camera.position.z= avion.position.z - 10*( Math.cos(keysPressed['Chi'])*Math.sin(keysPressed['Phi'])*Math.sin(keysPressed['Theta']) -Math.sin(keysPressed['Chi'])*Math.cos(keysPressed['Theta']) )
+    camera.position.y= avion.position.y + 10*( Math.cos(keysPressed['Phi'])*Math.sin(keysPressed['Theta'])) + 3
 
 
     // camera.position.x += 0.005;

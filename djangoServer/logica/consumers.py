@@ -1,6 +1,8 @@
+from cmath import pi
 import json
 import numpy as np
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+import time
 
 class entornoConsumer(AsyncJsonWebsocketConsumer):
 
@@ -39,7 +41,7 @@ class entornoConsumer(AsyncJsonWebsocketConsumer):
         
         #print(diccionario)
 
-        
+        #time.sleep(1)
         await self.send(text_data=json.dumps(coordenadas))
         #print(datos.diccionario)
 
@@ -99,11 +101,11 @@ class Prueba:
         vx[0]=self.diccionario['Vx']
         vy[0]=self.diccionario['Vy']
         vz[0]=self.diccionario['Vz']+0.00001
-        V0[0]=np.sqrt((vx[0]**2)+(vy[0]**2)+(vz[0]**2))
+        V0[0]=np.sqrt((vx[0]**2)+(vz[0]**2))
         #Variables angulares en  radianes
         Th[0]=self.diccionario['Theta']
         Ph[0]=self.diccionario['Phi']
-        Chi[0]=0
+        Chi[0]=self.diccionario['Chi']
         vTheta[0]=0
         vPhi[0]=0
         vChi[0]=0
@@ -116,10 +118,10 @@ class Prueba:
         Sw= 20 #m2
         Rho= 1.225 #densidad kg/m3
         Cd= 0.035
-        Cl= 0.59
-        E= self.diccionario['E']*(3000/9)
+        Clalpha= 0.5
+        E= self.diccionario['E']*(4000/9)
     
-        #print(Th[0],Ph[0])
+        
         #print(self.diccionario['E'])
         cX=np.cos(Th[0])
         sX=np.sin(Th[0])
@@ -133,33 +135,25 @@ class Prueba:
 
         #iniciamos bucle temporal de un segundo
         for i in range (1,11):
-
-            
-
-
-
-
+            c=np.cos(Th[0])
             #print(c)
             Nu = np.arctan(vy[i-1]/np.sqrt((vx[i-1]**2)+(vz[i-1]**2)))
-            Theta= -Th[0]
+            Theta= Th[0]
             Phi= Ph[0]
             alpha= Theta-Nu
             #moviento en x
             D=0.5*Sw*Rho*Cd*(V0[i-1]**2)
-            L=0.5*Sw*Rho*Cl*(V0[i-1]**2)
-
-            Fs=np.array([[E-D],[0],[L]])
-
-            Fcartesianas=np.dot(CB,Fs)
-
+            L=0.5*Sw*Rho*Clalpha*(V0[i-1]**2)
+            Fuerzascuerpo=np.array([E-np.cos(alpha)*D + np.sin(alpha)*L, 0, np.cos(alpha)*L + np.sin(alpha)*D])
+            Fuerzas=np.dot(Fuerzascuerpo,CB)
             ###### Fuerza x
+            Fx=Fuerzas[0]
             #Fx= np.cos(Theta)*(E+(L*np.cos(Phi)*np.sin(alpha)-(D*np.cos(alpha)))) - np.sin(Theta)*(L*np.cos(Phi)*np.cos(alpha)+D*np.cos(alpha))
-            Fx= Fcartesianas[0]
             ###### Fuerza en y
-            Fy= Fcartesianas[2]
+            Fy=Fuerzas[2]
             #Fy= np.sin(Theta)*(E+(L*np.cos(Phi)*np.sin(alpha)-(D*np.cos(alpha)))) + np.cos(Theta)*(L*np.cos(Phi)*np.cos(alpha)+D*np.cos(alpha))
             ###### Fuerza en z
-            Fz= -Fcartesianas[1]
+            Fz=Fuerzas[1]
             #Fz= L*np.sin(Phi)
             ###### posicion en x
 
@@ -185,7 +179,7 @@ class Prueba:
 
 
             #alpha= Theta[i-1]-Nu
-            V0[i]=np.sqrt((vx[i-1]**2)+(vy[i]**2)+(vz[i]**2))
+            V0[i]=np.sqrt((vx[i-1]**2)+(vz[i]**2))
             data[i]=[]
             data[i].append({
             #posicion  
@@ -197,6 +191,7 @@ class Prueba:
                 'vy': vy[i],
                 'Theta': Th[0],
                 'Phi': Ph[0],
+                'Chi': Chi[0],
                 'vz': vz[i],
             #angulos
                 # 'Theta': x[i],
@@ -217,8 +212,6 @@ class Prueba:
             self.data = data
 
         self.data = data
-        print(Fx)
+        #print(Fz)
         with open('data.json', 'w') as file:
-            json.dump(data, file, indent=1)         
-        
-
+            json.dump(data, file, indent=1)   
