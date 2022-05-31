@@ -161,9 +161,9 @@ let material
 // cube.position.x = 0;
 // cube.position.z = 0;
 // cube.position.y = 3;
-camera.position.z = 15;
-camera.position.y = 5;
-camera.position.x = -2;
+//camera.position.z = 15;
+//camera.position.y = 5;
+//camera.position.x = -2;
 // camera.lookAt (new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
 // camera.rotation.x = -0.5;
 
@@ -180,7 +180,8 @@ let loader = new GLTFLoader();
 loader.setPath('../static/JS/german_ww2_aircraft_messerschmitt_109/')
 loader.load('scene.gltf',function(gltf){
     gltf.scene.scale.multiplyScalar(1 / 60); // adjust scalar factor to match your scene scale
-    gltf.scene.rotation.y = 3.14;
+    gltf.scene.rotation.y = 1.57
+    ;
     gltf.scene.position.y = 1;
     avion = gltf.scene;
     scene.add(avion)
@@ -241,7 +242,7 @@ scene.add( directionalLight );
 
 // environment
 
-geometry = new THREE.PlaneGeometry( 500, 500, 10, 10 );
+geometry = new THREE.PlaneGeometry( 2000, 2000, 10, 10 );
 geometry.rotateX( - Math.PI / 2 );
 
 const positions = geometry.attributes.position.array;
@@ -318,36 +319,41 @@ var animate = function(){
 
     // updateCamera();
     requestAnimationFrame(animate);
-    avion.position.z =-keysPressed['x0']
+    avion.position.x = keysPressed['x0']
     avion.position.y = keysPressed['y0']
     avion.position.z = keysPressed['z0']
-    camera.position.x= avion.position.x -15
-    camera.position.y= avion.position.y +2
-    camera.position.z= avion.position.z
+    camera.position.x= avion.position.x - (15*keysPressed['Vx'])/(((keysPressed['Vx']**2) +(keysPressed['Vy']**2)+keysPressed['Vz']**2)**(0.5))
+    camera.position.y= avion.position.y - (0*keysPressed['Vy'])/(((keysPressed['Vx']**2) +(keysPressed['Vy']**2)+keysPressed['Vz']**2)**(0.5)) +5
+    camera.position.z= avion.position.z - (15*keysPressed['Vz'])/(((keysPressed['Vx']**2) +(keysPressed['Vy']**2)+keysPressed['Vz']**2)**(0.5))
 
     // camera.position.z = cube.position.z + 15;
     // camera.position.y = cube.position.y + 2;
     // camera.position.x = cube.position.x;
     if (keysPressed['ArrowDown'] == true) {
         // console.log('Esto funciona bien!');
-        avion.rotation.x += 0.05
+        avion.rotateX(-0.02)
+        keysPressed['Theta']-=0.02    
     }
 
     if (keysPressed['ArrowRight'] == true) {
         // console.log('Esto funciona bien!');
-        avion.rotation.z -= 0.05
+        avion.rotateZ(0.02)
+        keysPressed['Phi']+=0.02
+        
     }
     if (keysPressed['ArrowLeft'] == true) {
         // console.log('Esto funciona bien!');
-        avion.rotation.z += 0.05
+        avion.rotateZ(-0.02)
+        keysPressed['Phi']-=0.02
     }
 
     if (keysPressed['ArrowUp'] == true) {
         // console.log('Esto funciona bien!');
-        avion.rotation.x -= 0.05
+        avion.rotateX(0.02)
+        keysPressed['Theta']+=0.02
     }
 
-    keysPressed['Theta']=avion.rotation.x
+    
 
 
     // camera.position.x += 0.005;
@@ -362,7 +368,7 @@ var animate = function(){
         
     // });
     
-    // camera.lookAt (new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
+    camera.lookAt (new THREE.Vector3(avion.position.x,avion.position.y,avion.position.z));
     // cube.rotation.x += 0.02;
     // cube.rotation.y -= 0.01;
 

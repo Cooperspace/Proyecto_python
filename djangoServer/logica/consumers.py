@@ -119,28 +119,48 @@ class Prueba:
         Cl= 0.59
         E= self.diccionario['E']*(3000/9)
     
-        
+        #print(Th[0],Ph[0])
         #print(self.diccionario['E'])
+        cX=np.cos(Th[0])
+        sX=np.sin(Th[0])
+        cY=np.cos(Ph[0])
+        sY=np.sin(Ph[0])
+        cZ=np.cos(Chi[0])
+        sZ=np.sin(Chi[0])
+
+        CB=np.array([[cX*cZ, sY*sX*cZ - cY*sZ , cY*sX*cZ + sY*sZ],[cX*sZ, sY*sX*sZ + cY*cZ , cY*sX*sZ - sY*cZ ],[ -sX, sY*cX , cY*cX ]],float)
 
 
         #iniciamos bucle temporal de un segundo
         for i in range (1,11):
-            c=np.cos(Th[0])
+
+            
+
+
+
+
             #print(c)
             Nu = np.arctan(vy[i-1]/np.sqrt((vx[i-1]**2)+(vz[i-1]**2)))
-            Theta= Th[0]
+            Theta= -Th[0]
             Phi= Ph[0]
             alpha= Theta-Nu
             #moviento en x
             D=0.5*Sw*Rho*Cd*(V0[i-1]**2)
             L=0.5*Sw*Rho*Cl*(V0[i-1]**2)
 
+            Fs=np.array([[E-D],[0],[L]])
+
+            Fcartesianas=np.dot(CB,Fs)
+
             ###### Fuerza x
-            Fx= np.cos(Theta)*(E+(L*np.cos(Phi)*np.sin(alpha)-(D*np.cos(alpha)))) - np.sin(Theta)*(L*np.cos(Phi)*np.cos(alpha)+D*np.cos(alpha))
+            #Fx= np.cos(Theta)*(E+(L*np.cos(Phi)*np.sin(alpha)-(D*np.cos(alpha)))) - np.sin(Theta)*(L*np.cos(Phi)*np.cos(alpha)+D*np.cos(alpha))
+            Fx= Fcartesianas[0]
             ###### Fuerza en y
-            Fy= np.sin(Theta)*(E+(L*np.cos(Phi)*np.sin(alpha)-(D*np.cos(alpha)))) + np.cos(Theta)*(L*np.cos(Phi)*np.cos(alpha)+D*np.cos(alpha))
+            Fy= Fcartesianas[2]
+            #Fy= np.sin(Theta)*(E+(L*np.cos(Phi)*np.sin(alpha)-(D*np.cos(alpha)))) + np.cos(Theta)*(L*np.cos(Phi)*np.cos(alpha)+D*np.cos(alpha))
             ###### Fuerza en z
-            Fz= L*np.sin(Phi)
+            Fz= -Fcartesianas[1]
+            #Fz= L*np.sin(Phi)
             ###### posicion en x
 
             #print(Fy)
@@ -197,7 +217,7 @@ class Prueba:
             self.data = data
 
         self.data = data
-        #print(Fz)
+        print(Fx)
         with open('data.json', 'w') as file:
             json.dump(data, file, indent=1)         
         
