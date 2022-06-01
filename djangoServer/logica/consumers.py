@@ -119,7 +119,7 @@ class Prueba:
         Rho= 1.225 #densidad kg/m3
         Cd= 0.035
         Clalpha= 0.5
-        E= self.diccionario['E']*(4000/9)
+        E= self.diccionario['E']*(8000/9)
     
         
         #print(self.diccionario['E'])
@@ -213,5 +213,5 @@ class Prueba:
 
         self.data = data
         #print(Fz)
-        with open('data.json', 'w') as file:
-            json.dump(data, file, indent=1)   
+        # with open('data.json', 'w') as file:
+        #     json.dump(data, file, indent=1)   

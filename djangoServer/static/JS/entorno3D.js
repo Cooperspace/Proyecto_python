@@ -1,4 +1,16 @@
+import * as THREE from './three.module.js'
+import { OrbitControls } from './OrbitControls.js'
+import {TreesGeometry, SkyGeometry} from './RollerCoaster.js'
+import { GLTFLoader } from './GLTFLoader.js';
+import {Clock} from './Clock.js'
+
+
+
+
+
 console.log("El documento Javascript se ha cargado correctamente")
+
+
 
 let connectionString = 'ws://' + window.location.host + '/ws/logica/' ;
 const Socket = new WebSocket(connectionString);
@@ -93,8 +105,10 @@ function start() {
     // let startTime = [];
     // startTime[0] = Date.now();
     // console.time('t1')
+    
     Socket.send(JSON.stringify(keysPressed));
-
+    // let Tiempo = new Clock();
+    // Tiempo.start();
     Socket.addEventListener('message', (event) => {
     
             const POSICIONES = JSON.parse(event.data);
@@ -105,6 +119,9 @@ function start() {
             // let timediff = [];
             // timediff[0] = endTime[0] - startTime[0]
             // console.log(startTime[0])
+            // let delta = Tiempo.getDelta()
+            // console.log(delta[delta])
+            // Tiempo.stop()
             keysPressed['x0']=  POSICIONES['3'][0]['x']
             keysPressed['y0']=  POSICIONES['3'][0]['y']
             keysPressed['z0']=  POSICIONES['3'][0]['z']
@@ -133,10 +150,7 @@ document.addEventListener('click', () => {
 
 // import { OrbitControls } from '../../../../three_repository/examples/jsm/controls/OrbitControls.js'
 
-import * as THREE from './three.module.js'
-import { OrbitControls } from './OrbitControls.js'
-import {TreesGeometry, SkyGeometry} from './RollerCoaster.js'
-import { GLTFLoader } from './GLTFLoader.js';
+
 
 
 // // let mouse = new THREE.Vector2();
