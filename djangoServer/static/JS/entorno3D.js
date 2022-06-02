@@ -186,6 +186,24 @@ loader.load('scene.gltf',function(gltf){
     avion = gltf.scene;
     scene.add(avion)
 });
+
+var plasmaballs= [];
+window.addEventListener('space', Shoot)
+
+function Shoot(){
+    let plasmaball = new THREE.Mesh(new THREE.SphereGeometry(100, 3, 2), new THREE.MeshBasicMaterial({
+        color: 'red'
+    }))
+    plasmaball.position= avion.position
+    plasmaball.quaternion.copy(avion.quaternion);
+    scene.add(plasmaball)
+    plasmaballs.push(plasmaball)
+};
+
+
+
+
+
 // camera.lookAt (new THREE.Vector3(avion.position.x,avion.position.y,avion.position.z));
 // //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -207,85 +225,85 @@ scene.add( directionalLight );
 
 // ground
 
-const ground = new THREE.Mesh( new THREE.PlaneGeometry( 20000, 20000 ), new THREE.MeshPhongMaterial( { color: 0x445544, depthWrite: false } ) );
-ground.rotation.x = - Math.PI / 2;
-ground.receiveShadow = true;
-scene.add( ground );
+// const ground = new THREE.Mesh( new THREE.PlaneGeometry( 20000, 20000 ), new THREE.MeshPhongMaterial( { color: 0x445544, depthWrite: false } ) );
+// ground.rotation.x = - Math.PI / 2;
+// ground.receiveShadow = true;
+// scene.add( ground );
 
-const grid = new THREE.GridHelper( 20000, 2000, 0x998652, 0x998652 );
-grid.material.opacity = 0.5;
-grid.material.transparent = true;
-scene.add( grid );
-////////////////////////////////////////////////////////////////////////////
-// const GroundGeo = new THREE.PlaneGeometry(10000,10000,300,200);
-// let disMap = new THREE.TextureLoader()
-//     .setPath('../static/IMAGES/')
-//     .load('Terrain-Heightmap.png')
+// const grid = new THREE.GridHelper( 20000, 2000, 0x998652, 0x998652 );
+// grid.material.opacity = 0.5;
+// grid.material.transparent = true;
+// scene.add( grid );
+//////////////////////////////////////////////////////////////////////////
+const GroundGeo = new THREE.PlaneGeometry(10000,10000,300,200);
+let disMap = new THREE.TextureLoader()
+    .setPath('../static/IMAGES/')
+    .load('Terrain-Heightmap.png')
      
-//     disMap.wrapS = disMap.wrapT = THREE.RepeatWrapping;
-//     disMap.repeat.set(1,1)
+    disMap.wrapS = disMap.wrapT = THREE.RepeatWrapping;
+    disMap.repeat.set(1,1)
 
-// const groundMat = new THREE.MeshStandardMaterial({
-//     color:0x445544,
-//     wireframe: true,
-//     displacementMap: disMap,
-//     displacementScale: 330,
-// })
+const groundMat = new THREE.MeshStandardMaterial({
+    color:0x445544,
+    wireframe: true,
+    displacementMap: disMap,
+    displacementScale: 330,
+})
 
-// const groundMesh = new THREE.Mesh(GroundGeo,groundMat);
-// scene.add(groundMesh);
-// groundMesh.rotation.x = Math.PI/2;
-// groundMesh.position.y = -1;
-// groundMesh.receiveShadow = true;
-// groundMesh.color = 0xff0000;
-///////////////////////////////////////////////////////////////////////////
+const groundMesh = new THREE.Mesh(GroundGeo,groundMat);
+scene.add(groundMesh);
+groundMesh.rotation.x = Math.PI/2;
+groundMesh.position.y = -1;
+groundMesh.receiveShadow = true;
+groundMesh.color = 0xff0000;
+/////////////////////////////////////////////////////////////////////////
 
-// environment
+//environment
 
-// geometry = new THREE.PlaneGeometry( 2000, 2000, 10, 10 );
-// geometry.rotateX( - Math.PI / 2 );
+geometry = new THREE.PlaneGeometry( 20000, 20000, 10, 10 );
+geometry.rotateX( - Math.PI / 2 );
 
-// const positions = geometry.attributes.position.array;
-// const vertex = new THREE.Vector3();
+const positions = geometry.attributes.position.array;
+const vertex = new THREE.Vector3();
 
-// for ( let i = 0; i < positions.length; i += 6 ) {
+for ( let i = 0; i < positions.length; i += 6 ) {
 
-//     vertex.fromArray( positions, i );
+    vertex.fromArray( positions, i );
 
-//     vertex.x += Math.random() * 10 - 5;
-//     vertex.z += Math.random() * 10 - 5;
+    vertex.x += Math.random() * 10 - 5;
+    vertex.z += Math.random() * 10 - 5;
 
-//     const distance = ( vertex.distanceTo( scene.position ) / 5 ) - 25;
-//     vertex.y = Math.random() * Math.max( 0, distance );
+    const distance = ( vertex.distanceTo( scene.position ) / 5 ) - 25;
+    vertex.y = Math.random() * Math.max( 0, distance );
 
-//     vertex.toArray( positions, i );
+    vertex.toArray( positions, i );
 
-// }
+}
 
-// geometry.computeVertexNormals();
+geometry.computeVertexNormals();
 
-// material = new THREE.MeshLambertMaterial( {
-//     color: 0x407000
-// } );
+material = new THREE.MeshLambertMaterial( {
+    color: 0x407000
+} );
 
-// const mesh = new THREE.Mesh( geometry, material );
-// scene.add( mesh );
-// mesh.position.y = -0.5;
+const mesh = new THREE.Mesh( geometry, material );
+scene.add( mesh );
+mesh.position.y = -0.5;
 
-// geometry = new TreesGeometry( mesh );
-// material = new THREE.MeshBasicMaterial( {
-//     side: THREE.DoubleSide, vertexColors: true
-// } );
-// const mesh2 = new THREE.Mesh( geometry, material );
-// scene.add( mesh2 );
-// mesh2.position.y = -0.5;
+geometry = new TreesGeometry( mesh );
+material = new THREE.MeshBasicMaterial( {
+    side: THREE.DoubleSide, vertexColors: true
+} );
+const mesh2 = new THREE.Mesh( geometry, material );
+scene.add( mesh2 );
+mesh2.position.y = -0.5;
 
-// geometry = new SkyGeometry();
-// material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
-// const mesh3 = new THREE.Mesh( geometry, material );
-// scene.add( mesh3 );
-// mesh3.position.y = -0.5;
-//
+geometry = new SkyGeometry();
+material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+const mesh3 = new THREE.Mesh( geometry, material );
+scene.add( mesh3 );
+mesh3.position.y = -0.5;
+
 
 
 //Agregar el renderer
@@ -312,6 +330,32 @@ controls.maxPolarAngle = Math.PI; // maximo angulo para girar la camara
 
 controls.screenSpacePanning = true; // poder mover la panoramica de la imagen en cualquier eje cartesiano
 
+var plasmaBalls = [];
+window.addEventListener("mousedown", onMouseDown);
+
+function onMouseDown() {
+let plasmaBall = new THREE.Mesh(new THREE.SphereGeometry(0.1, 3, 2), new THREE.MeshBasicMaterial({
+    color: "red"
+}));
+plasmaBall.position.copy(avion.position); // start position - the tip of the weapon
+plasmaBall.quaternion.copy(avion.quaternion); // apply camera's quaternion
+scene.add(plasmaBall);
+plasmaBalls.push(plasmaBall);
+}
+
+var speed = 50;
+var clock = new THREE.Clock();
+var delta = 0;
+
+
+(function render() {
+    requestAnimationFrame(render);
+    delta = clock.getDelta();
+    plasmaBalls.forEach(b => {
+      b.translateZ(speed * delta); // move along the local z-axis
+    });
+    renderer.render(scene, camera);
+})()
 // ANIMACION
 
 var animate = function(){
@@ -374,9 +418,21 @@ var animate = function(){
         
     // });
     
+
+    
+
+
+
+// requestAnimationFrame(animate)
+//     delta= clock.getDelta();
+//     plasmaballs.forEach(b => {
+//         b.translateX(speed*delta)
+//     });
+    
     camera.lookAt (new THREE.Vector3(avion.position.x,avion.position.y,avion.position.z));
     // cube.rotation.x += 0.02;
     // cube.rotation.y -= 0.01;
+
 
     renderer.render(scene,camera);  //ESTO SIEMPRE DEBE IR AL FINAL PARA QUE FUNCIONE!!
 

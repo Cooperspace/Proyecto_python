@@ -513,10 +513,10 @@ class TreesGeometry extends BufferGeometry {
 		const raycaster = new Raycaster();
 		raycaster.ray.direction.set( 0, - 1, 0 );
 
-		for ( let i = 0; i < 2000; i ++ ) {
+		for ( let i = 0; i < 20000; i ++ ) {
 
-			const x = Math.random() * 500 - 250;
-			const z = Math.random() * 500 - 250;
+			const x = Math.random() * 5000 - 250;
+			const z = Math.random() * 5000 - 250;
 
 			raycaster.ray.origin.set( x, 50, z );
 
