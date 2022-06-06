@@ -14,13 +14,6 @@ class entornoConsumer(AsyncJsonWebsocketConsumer):
             'type': 'connection_established',
             'message': 'You are now connected!'
         }))
-
-        # await self.send({"type": "websocket.accept",})
-                        
-
-
-
-        # await self.send({"type":"websocket.send","text":0})
                         
 
         
@@ -39,39 +32,15 @@ class entornoConsumer(AsyncJsonWebsocketConsumer):
         l=coordenadas[3]
         r=l[0]
         
-        #print(diccionario)
-
-        #time.sleep(1)
         await self.send(text_data=json.dumps(coordenadas))
-        #print(datos.diccionario)
-
-        # datos.girar()
-        # data = {'flecha_abajo':datos.ArrowDown}
-        # print(data)
-        # print("recibido", response)
-        # respuesta = response["numero1"]+response["numero2"]
-        # print("respuesta",respuesta)
-        # await self.send(text_data=json.du3mps(
-        #     {"respuesta":respuesta}
-        # ))
+  
         
 
 
-# class operaciones:
-#     def __init__(self,diccionario):
-#         self.diccionario = diccionario
-#         self.ArrowDown = 1
-#     def girar(self):
-#         if self.diccionario["ArrowDown"] == True:
-#             self.ArrowDown = 0.05
-            
-#         else:
-#             self.ArrowDown = 0
+
 class Prueba:
     def __init__(self,diccionario):
         self.diccionario = diccionario
-
-# diccionario= clase.receive()
 
         T= np.linspace(0,1,101) #se divide un segundo en 100 partes 
         DT= 0.01 #diferencial de tiempo
@@ -200,16 +169,7 @@ class Prueba:
                 # 'vTheta': x[i],
                 # 'vPhi': x[i],
                 # 'vChi': x[i]
-
-
             })
-
-
-        
-
-
-            
-            self.data = data
 
         self.data = data
         #print(Fz)

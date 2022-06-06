@@ -19,20 +19,6 @@ let data = JSON.parse(e.data)
 // Socket.send(1)
 }
 
-    
-    
-const handleSend = (a) => {
-    if (Socket.readyState === WebSocket.OPEN) {
-        Socket.send(a)
-    } else if (Socket.readyState == WebSocket.CONNECTING) {
-        // Wait for the open event, maybe do something with promises
-        // depending on your use case. I believe in you developer!
-        Socket.addEventListener('open', () => handleSend(a))
-    } else {
-        // etc.
-    }
-};
-
 //######################################################################################################################
 //######################################################################################################################
 
@@ -82,29 +68,18 @@ document.addEventListener('keydown', (event) => {
  
 document.addEventListener('keyup', (event) => {
     keysPressed[event.key] = false;
-    // delete keysPressed[event.key];
-    // console.log(keysPressed)
+
 });
 
 //######################################################################################################################
 //######################################################################################################################
-// let Posiciones_2 = {}
 function start() {
-    // let startTime = [];
-    // startTime[0] = Date.now();
-    // console.time('t1')
     Socket.send(JSON.stringify(keysPressed));
 
     Socket.addEventListener('message', (event) => {
     
             const POSICIONES = JSON.parse(event.data);
-        //    console.timeEnd('t1')
-        //    console.log('t1')
-            // let endTime = [];
-            // endTime[0] = Date.now();
-            // let timediff = [];
-            // timediff[0] = endTime[0] - startTime[0]
-            // console.log(startTime[0])
+
             keysPressed['x0']=  POSICIONES['3'][0]['x']
             keysPressed['y0']=  POSICIONES['3'][0]['y']
             keysPressed['z0']=  POSICIONES['3'][0]['z']
@@ -112,8 +87,7 @@ function start() {
             keysPressed['Vx']= POSICIONES['3'][0]['vx']
             keysPressed['Vy']= POSICIONES['3'][0]['vy']
             keysPressed['Vz']= POSICIONES['3'][0]['vz']
-            // console.log(keysPressed['x0'])
-            // console.log(POSICIONES)
+
          });
          
 
@@ -129,17 +103,12 @@ document.addEventListener('click', () => {
 //######################################################################################################################
 //######################################################################################################################
 
-// import * as THREE from '../../../../three_repository/build/three.module.js'
 
-// import { OrbitControls } from '../../../../three_repository/examples/jsm/controls/OrbitControls.js'
 
 import * as THREE from './three.module.js'
 import { OrbitControls } from './OrbitControls.js'
 import {TreesGeometry, SkyGeometry} from './RollerCoaster.js'
 import { GLTFLoader } from './GLTFLoader.js';
-
-
-// // let mouse = new THREE.Vector2();
 
 
 // Crear la escena
@@ -154,6 +123,8 @@ var camera = new THREE.PerspectiveCamera(
 //Añadir geometria
 let geometry
 let material
+// EL CUBO!!
+
 // var geometry = new THREE.BoxGeometry(2,2,2,2,2,2);
 // var material = new THREE.MeshBasicMaterial({color:`rgb(${0},${125},${200})`, wireframe: true });
 // var cube = new THREE.Mesh(geometry, material);
@@ -166,13 +137,6 @@ let material
 //camera.position.x = -2;
 // camera.lookAt (new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
 // camera.rotation.x = -0.5;
-
-// // CIRCULO 
-
-// var circle = new THREE.Mesh(new THREE.CircleGeometry(2,32),material);
-// scene.add(circle);
-// circle.position.x = 8; 
-// circle.position.y = 5;
 //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 let avion
@@ -201,10 +165,6 @@ function Shoot(){
 };
 
 
-
-
-
-// camera.lookAt (new THREE.Vector3(avion.position.x,avion.position.y,avion.position.z));
 // //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 //Light
@@ -366,21 +326,13 @@ var animate = function(){
     avion.position.x = keysPressed['x0']
     avion.position.y = keysPressed['y0']
     avion.position.z = keysPressed['z0']
-    // camera.position.x= avion.position.x - (15*keysPressed['Vx'])/(((keysPressed['Vx']**2) +(keysPressed['Vy']**2)+keysPressed['Vz']**2)**(0.5))
-    // camera.position.y= avion.position.y - (0*keysPressed['Vy'])/(((keysPressed['Vx']**2) +(keysPressed['Vy']**2)+keysPressed['Vz']**2)**(0.5)) +5
-    // camera.position.z= avion.position.z - (15*keysPressed['Vz'])/(((keysPressed['Vx']**2) +(keysPressed['Vy']**2)+keysPressed['Vz']**2)**(0.5))
 
-    // camera.position.z = cube.position.z + 15;
-    // camera.position.y = cube.position.y + 2;
-    // camera.position.x = cube.position.x;
     if (keysPressed['ArrowDown'] == true) {
-        // console.log('Esto funciona bien!');
         avion.rotateX(-0.005)
         keysPressed['Theta']-=0.005    
     }
 
     if (keysPressed['ArrowRight'] == true) {
-        // console.log('Esto funciona bien!');
         avion.rotateZ(0.005)
         avion.rotateY(-0.005)
         keysPressed['Phi']+=0.005
@@ -388,7 +340,6 @@ var animate = function(){
         
     }
     if (keysPressed['ArrowLeft'] == true) {
-        // console.log('Esto funciona bien!');
         avion.rotateZ(-0.005)
         avion.rotateY(0.005)
         keysPressed['Phi']-=0.005
@@ -396,7 +347,6 @@ var animate = function(){
     }
 
     if (keysPressed['ArrowUp'] == true) {
-        // console.log('Esto funciona bien!');
         avion.rotateX(0.005)
         keysPressed['Theta']+=0.005
     }
@@ -406,43 +356,16 @@ var animate = function(){
     camera.position.y= avion.position.y + 10*( Math.cos(keysPressed['Phi'])*Math.sin(keysPressed['Theta'])) + 3
 
 
-    // camera.position.x += 0.005;
-
-    // scene.traverse(function(object){
-    //     if(object === ground){
-
-    //     } else if(object.isMesh === true) {
-    //         object.rotation.x += 0.01;
-    //         object.rotation.y += 0.01;
-    //     }
-        
-    // });
-    
-
-    
-
-
-
-// requestAnimationFrame(animate)
-//     delta= clock.getDelta();
-//     plasmaballs.forEach(b => {
-//         b.translateX(speed*delta)
-//     });
+   
     
     camera.lookAt (new THREE.Vector3(avion.position.x,avion.position.y,avion.position.z));
-    // cube.rotation.x += 0.02;
-    // cube.rotation.y -= 0.01;
-
 
     renderer.render(scene,camera);  //ESTO SIEMPRE DEBE IR AL FINAL PARA QUE FUNCIONE!!
 
 }
 
 function init(){
-    //set up mouse stuff
-    // document.addEventListener('mousemove',onDocumentMouseMove,false);
     window.addEventListener('resize',onWindowResize,false);
-    // document.addEventListener('mouseclick',onDocumentMouseClick,false);
 
 }
 
@@ -452,18 +375,6 @@ function init(){
 //     camera.position.y = camera.position.y + (mouse.y);
 //     // camera.position.z = cameraCenter.z + (cameraVertLimit * mouse.z);
 //     camera.lookAt (new THREE.Vector3(cube.position.x,cube.position.y,cube.position.z));
-// }
-
-// function onDocumentMouseMove(event) {
-//     event.preventDefault();
-//     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-//     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-// }
-
-// function onDocumentMouseClick(event) {
-//     event.preventDefault();
-//     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-//     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 // }
 
 
@@ -477,130 +388,3 @@ setTimeout(animate,500);
 init();
 // ####################################################################################################
 // ####################################################################################################
-// async function Alert(){
-//     // document.getElementById("alerta").value = 1
-//    let a = {"numero1":2,"numero2":3};
-//     // const response = await fetch(`http://127.0.0.1:8000/prueba/${a}`);
-//     // const data = await response.json();
-//     // document.getElementById("alerta").value = data.respuesta
-
-//     Socket.send(JSON.stringify(a))
-//     Socket.addEventListener('message', (event) => {
-//         console.log('Recibido nuevo mensaje');
-//         const NUEVA_DATA_JSON= JSON.parse(event.data);
-//         let NUEVA_DATA = NUEVA_DATA_JSON["respuesta"];
-//         document.getElementById("alerta").value = NUEVA_DATA
-//     });
-    
-// };
-// const button1 = document.getElementById("button1");
-// button1.addEventListener('click', Alert)
-// Alert();
-// #########################################################################################################
-// #########################################################################################################
-
-
-
-// Socket.send(JSON.stringify({"numero1":2,"numero2":3}))
-// handleSend(JSON.stringify({"numero1":2,"numero2":3}))
-
-
-// Socket.addEventListener('open', () => {
-//     console.log('Conectado');
-// });
-// // Desconectado
-// Socket.addEventListener('close', () => {
-//      console.log('Desconectado');
-//  });
-
-// // Recibir mensaje
-// Socket.addEventListener('message', (event) => {
-    
-//     const MI_NUEVA_DATA = JSON.parse(event.data);
-//     console.log('Recibido nuevo mensaje',MI_NUEVA_DATA);
-//  });
-
-//#############################################################################################
-//####################################################################################################
-
-
-
-// function movimiento(){
-//     requestAnimationFrame(movimiento)
-//     if (keysPressed['ArrowDown'] == true) {
-//         // console.log('Esto funciona bien!');
-//         cube.rotation.x += 0.05
-//     }
-
-//     if (keysPressed['ArrowRight'] == true) {
-//         // console.log('Esto funciona bien!');
-//         cube.rotation.z -= 0.05
-//     }
-//     if (keysPressed['ArrowLeft'] == true) {
-//         // console.log('Esto funciona bien!');
-//         cube.rotation.z += 0.05
-//     }
-
-//     if (keysPressed['ArrowUp'] == true) {
-//         // console.log('Esto funciona bien!');
-//         cube.rotation.x -= 0.05
-//     }
-// //    console.log(keysPressed)
-// }
-// // document.addEventListener('keydown',movimiento)
-// movimiento();
-//####################################################################################################
-//####################################################################################################
-// document.addEventListener('keydown', (event) => {
-//     var name = event.key;
-//     var code = event.code;
-//     // Alert the key name and key code on keydown
-//     // console.log(`Key pressed ${name} \r\n Key code value: ${code}`);
-//     if (name === 'ArrowDown'){
-//         cube.rotation.x += 0.1
-//     }
-// }, false);
-//####################################################################################################
-//####################################################################################################
-
-// PRUEBA CON PYTHON 
-// document.addEventListener('keydown', () => {
-    
-//   Socket.send(JSON.stringify(keysPressed))
-    
- 
-// });
-
-// setInterval(Socket.send(JSON.stringify(keysPressed)),100)
-
-// function start() {
-//     let startTime = Date.now();
-//     Socket.send(JSON.stringify(keysPressed));
-
-//     Socket.addEventListener('message', (event) => {
-    
-//             const MI_NUEVA_DATA = JSON.parse(event.data);
-//             let endTime = Date.now();
-//             let timediff = endTime - startTime
-//             console.log(timediff)
-            
-//          });
-
-// }
-
-// document.addEventListener('click', () => {
-//     setInterval(start(),3000);
-//   },);
-//###################################################################################################
-//###################################################################################################
-
-// function rota(){
-//     console.log("Hola mundo");
-//     cube.rotation.x = parseInt(document.getElementById('alerta').value);
-// }
-
-// const boton = document.getElementById('button1');
-// boton.addEventListener('click',rota)
-//###################################################################################################
-
-
